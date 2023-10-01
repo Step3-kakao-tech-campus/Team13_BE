@@ -1,4 +1,4 @@
-package com.theocean.fundering.user.domain;
+package com.theocean.fundering.domain.user.domain;
 
 import com.theocean.fundering.user.domain.constant.UserRole;
 import jakarta.persistence.*;

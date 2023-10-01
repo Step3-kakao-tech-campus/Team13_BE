@@ -1,7 +1,8 @@
-package com.theocean.fundering.follow.domain;
+package com.theocean.fundering.domain.follow.domain;
 
-import com.theocean.fundering.celebrity.domain.Celebrity;
-import com.theocean.fundering.user.domain.User;
+
+import com.theocean.fundering.domain.celebrity.domain.Celebrity;
+import com.theocean.fundering.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

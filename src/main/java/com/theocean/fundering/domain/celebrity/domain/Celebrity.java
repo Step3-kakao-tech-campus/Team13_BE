@@ -1,8 +1,8 @@
-package com.theocean.fundering.celebrity.domain;
+package com.theocean.fundering.domain.celebrity.domain;
 
 import com.theocean.fundering.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.celebrity.domain.constant.CelebType;
-import com.theocean.fundering.follow.domain.Follow;
+import com.theocean.fundering.domain.follow.domain.Follow;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,8 +21,9 @@ import java.util.Objects;
 @Entity
 public class Celebrity {
     @Id
+    @Column(name = "celebId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long celeId;
+    private Long celebId;
 
     @Column(nullable = false, length = 15)
     private String celebName;
@@ -99,11 +100,11 @@ public class Celebrity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Celebrity celebrity)) return false;
-        return Objects.equals(celeId, celebrity.celeId);
+        return Objects.equals(celebId, celebrity.celebId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(celeId);
+        return Objects.hash(celebId);
     }
 }

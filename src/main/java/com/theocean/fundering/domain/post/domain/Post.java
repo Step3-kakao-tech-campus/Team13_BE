@@ -1,7 +1,9 @@
 package com.theocean.fundering.domain.post.domain;
 
 
+import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.comment.domain.Comment;
+import com.theocean.fundering.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,18 +26,16 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    @Column(name = "USER_ID")
-    private Long userId;
 
-    @Column(name = "CELEBRITY_ID")
-    private Long celebId;
-
-
+    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
     private User writer;
 
 
+    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "celebId")
     private Celebrity celeb;
 
     @Column(nullable = false)

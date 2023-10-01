@@ -1,11 +1,10 @@
-package com.theocean.fundering.admin.domain;
+package com.theocean.fundering.domain.admin.domain;
 
+import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.domain.user.domain.User;
 import lombok.*;
-
 import jakarta.persistence.*;
 
-import com.theocean.fundering.user.domain.User;
-import com.theocean.fundering.post.domain.Post;
 import com.theocean.fundering.account.domain.Account;
 
 @Entity

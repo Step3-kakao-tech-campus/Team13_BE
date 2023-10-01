@@ -1,6 +1,7 @@
-package com.theocean.fundering.evidence.domain;
+package com.theocean.fundering.domain.evidence.domain;
 
-import com.theocean.fundering.withdrawal.domain.Withdrawal;
+
+import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

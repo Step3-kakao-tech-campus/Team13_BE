@@ -1,12 +1,13 @@
-package com.theocean.fundering.update.domain;
+package com.theocean.fundering.domain.update.domain;
 
+import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.theocean.fundering.user.domain.User;
-import com.theocean.fundering.post.domain.Post;
+
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;

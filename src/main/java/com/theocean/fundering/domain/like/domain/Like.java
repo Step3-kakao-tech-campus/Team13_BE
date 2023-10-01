@@ -1,6 +1,8 @@
 package com.theocean.fundering.domain.like.domain;
 
 
+import com.theocean.fundering.domain.celebrity.domain.Celebrity;
+import com.theocean.fundering.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,20 +16,19 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Like {
 
     @Id
-    @Column(name = "LIKE_ID")
+    @Column(name = "likeId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likeId;
 
-    @Column(name = "USER_ID")
-    private Long userId;
-
-    @Column(name = "CELEBRITY_ID")
-    private Long celebId;
-
+    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
     private User user;
 
+
+    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "celebId")
     private Celebrity celeb;
 
 

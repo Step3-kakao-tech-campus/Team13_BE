@@ -1,4 +1,4 @@
-package com.theocean.fundering.account.domain;
+package com.theocean.fundering.domain.account.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
