@@ -23,19 +23,19 @@ import java.util.Objects;
 public class Post {
 
     @Id
+    @Column(name = "POST_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
 
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "USER_ID")
     private User writer;
 
 
-    @Column(nullable = false)
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "celebId")
+    @JoinColumn(name = "CELEB_ID")
     private Celebrity celeb;
 
     @Column(nullable = false)

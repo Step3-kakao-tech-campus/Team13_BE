@@ -1,6 +1,6 @@
 package com.theocean.fundering.domain.user.domain;
 
-import com.theocean.fundering.user.domain.constant.UserRole;
+import com.theocean.fundering.domain.user.domain.constant.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

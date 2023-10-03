@@ -21,7 +21,7 @@ import java.util.Objects;
 @Entity
 public class Celebrity {
     @Id
-    @Column(name = "celebId")
+    @Column(name = "CELEB_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long celebId;
 

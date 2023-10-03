@@ -4,8 +4,7 @@ import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.user.domain.User;
 import lombok.*;
 import jakarta.persistence.*;
-
-import com.theocean.fundering.account.domain.Account;
+import com.theocean.fundering.domain.account.domain.Account;
 
 @Entity
 @Table(name = "Admin")

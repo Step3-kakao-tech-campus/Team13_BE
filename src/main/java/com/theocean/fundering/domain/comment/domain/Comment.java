@@ -2,6 +2,7 @@ package com.theocean.fundering.domain.comment.domain;
 
 
 import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -25,16 +26,12 @@ public class Comment {
     private Long commentId;
 
 
-    @Column(name = "USER_ID", nullable = false)
-    private Long userId;
-
-    @Column(name = "POST_ID", nullable = false)
-    private Long postId;
-
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID")
     private User writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "POST_ID")
     private Post post;
 
     @Column(nullable = false)

@@ -16,19 +16,19 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Like {
 
     @Id
-    @Column(name = "likeId")
+    @Column(name = "LIKE_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likeId;
 
-    @Column(nullable = false)
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "USER_ID")
     private User user;
 
 
-    @Column(nullable = false)
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "celebId")
+    @JoinColumn(name = "CELEB_ID")
     private Celebrity celeb;
 
 
