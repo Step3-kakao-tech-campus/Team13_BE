@@ -2,40 +2,47 @@ package com.theocean.fundering.domain.like.domain;
 
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.user.domain.User;
+import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.Objects;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name="heart")
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-@Table(name="like")
-public class Like {
+public class Heart {
 
     @Id
-    @Column(name = "likeId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long likeId;
+    private Long heartId;
 
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private User user;
+    private Member member;
 
 
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "celebId")
     private Celebrity celeb;
 
 
     @Builder
-    public Like(User user, Celebrity celeb){
-        this.user = user;
+    public Heart(Member member, Celebrity celeb) {
+        this.member = member;
         this.celeb = celeb;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Heart heart)) return false;
+        return Objects.equals(heartId, heart.heartId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(heartId);
+    }
 }

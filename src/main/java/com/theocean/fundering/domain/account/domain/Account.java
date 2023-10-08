@@ -1,5 +1,7 @@
 package com.theocean.fundering.domain.account.domain;
 
+import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,23 +16,22 @@ import java.util.Objects;
 @Entity
 public class Account {
     @Id
-    @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    private Member member;
 
-    @Column(name = "post_id")
-    private Long postId;
+    @ManyToOne
+    private Post post;
 
-    @Column(name = "funding_amount", nullable = false)
-    private Integer fundingAmount;
+    @Column
+    private int fundingAmount;
 
     @Builder
-    public Account(Integer fundingAmount) {
-        this.userId = userId;
-        this.postId = postId;
+    public Account(Member member, Post post, int fundingAmount) {
+        this.member = member;
+        this.post = post;
         this.fundingAmount = fundingAmount;
     }
 

@@ -1,6 +1,9 @@
 package com.theocean.fundering.domain.evidence.domain;
 
 
+import com.theocean.fundering.global.utils.AuditingFields;
+import com.theocean.fundering.domain.member.domain.Member;
+import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.withdrawal.domain.Withdrawal;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,30 +16,26 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "evidence")
-public class Evidence {
+@Entity
+public class Evidence extends AuditingFields {
     @Id
-    @Column(name = "evidence_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long evidenceId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "withdrawal_id")
     private Withdrawal withdrawal;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
-    @Column(name = "post_id")
-    private Long postId;
-
-    @Column(name = "evidence_image")
-    private String evidenceImage;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Post post;
 
     @Builder
-    public Evidence(Long postId, Long userId, String evidenceImage) {
-        this.postId = postId;
-        this.userId = userId;
-        this.evidenceImage = evidenceImage;
+    public Evidence(Withdrawal withdrawal, Member member, Post post) {
+        this.withdrawal = withdrawal;
+        this.member = member;
+        this.post = post;
     }
 
     @Override

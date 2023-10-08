@@ -1,44 +1,40 @@
 package com.theocean.fundering.domain.admin.domain;
 
+import com.theocean.fundering.domain.account.domain.Account;
+import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.post.domain.Post;
-import com.theocean.fundering.domain.user.domain.User;
+import com.theocean.fundering.domain.member.domain.Member;
 import lombok.*;
 import jakarta.persistence.*;
 
-import com.theocean.fundering.account.domain.Account;
-
-@Entity
-@Table(name = "Admin")
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Admin {
+@Table(name = "admin")
+@Entity
+public class Admin extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "adminId")
     @EqualsAndHashCode.Include
-    private Long id;
+    private Long adminId;
 
     // 유저
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private User user;
+    private Member member;
 
     // 게시물
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId")
     private Post post;
 
     // 계좌
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "accountId")
     private Account account;
 
     // 생성자
     @Builder
-    public Admin(User user, Post post, Account account) {
-        this.user = user;
+    public Admin(Member member, Post post, Account account) {
+        this.member = member;
         this.post = post;
         this.account = account;
     }

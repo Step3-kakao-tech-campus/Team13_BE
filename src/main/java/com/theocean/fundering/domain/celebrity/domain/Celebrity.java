@@ -3,12 +3,11 @@ package com.theocean.fundering.domain.celebrity.domain;
 import com.theocean.fundering.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.celebrity.domain.constant.CelebType;
 import com.theocean.fundering.domain.follow.domain.Follow;
+import com.theocean.fundering.global.utils.AuditingFields;
+import com.theocean.fundering.domain.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,9 +18,8 @@ import java.util.Objects;
         indexes = @Index(columnList = "celebName")
 )
 @Entity
-public class Celebrity {
+public class Celebrity extends AuditingFields {
     @Id
-    @Column(name = "celebId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long celebId;
 
@@ -44,27 +42,9 @@ public class Celebrity {
     @OneToMany(mappedBy = "celebrity")
     private List<Follow> followers;
 
-    /*
-        이후 fundering 객체로 리팩토링 예정
-    */
+    @OneToMany(mappedBy = "celebrity")
+    private List<Post> post;
 
-    @Column(nullable = false)
-    private Integer funderingCount;
-
-    @Column(nullable = false)
-    private Integer funderAmount;
-
-    /*
-        AuditingEntity로 리팩토링 예정
-    */
-
-    @CreatedDate
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt;
 
     public void changeCelebName(String celebName) {
         this.celebName = celebName;
