@@ -40,7 +40,6 @@ public class CommentResponse {
         private final Long parentCommentOrder;
         private final Long commentOrder;
 
-
         @JsonProperty("isDeleted")
         private final boolean isDeleted;
         private final long createdAt;

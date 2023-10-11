@@ -13,8 +13,6 @@ import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,9 +110,17 @@ public class CommentService {
 
         List<Comment> comments;
         try {
-            comments = customCommentRepository.findCommentsByPostIdAndCursor(postId, lastComment, pageSize);
+            comments = customCommentRepository.findCommentsByPostId(postId, lastComment, pageSize+1);
         } catch(Exception e) {
             throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
+        }
+
+        // 응답 DTO의 isLastPage부분 - pageSize와 댓글 수가 일치할 때를 위해 하나 더 조회한다
+        boolean isLast = comments.size() <= pageSize;
+
+        if (!isLast) {
+            // 실제로 사용할 댓글은 pageSize 개만
+            comments = comments.subList(0, pageSize);
         }
 
         // 응답 DTO의 comments부분
@@ -122,8 +128,7 @@ public class CommentService {
                 .map(this::createCommentsDTO)
                 .collect(Collectors.toList());
 
-        // 응답 DTO의 isLastPage부분
-        boolean isLast = comments.size() < pageSize;
+
 
         // 응답 DTO의 lastCommentOrder부분
         Long lastCommentOrder = null;
