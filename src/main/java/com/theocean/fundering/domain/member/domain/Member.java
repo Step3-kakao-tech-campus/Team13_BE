@@ -1,23 +1,21 @@
-package com.theocean.fundering.domain.user.domain;
+package com.theocean.fundering.domain.member.domain;
 
-import com.theocean.fundering.user.domain.constant.UserRole;
+import com.theocean.fundering.global.utils.AuditingFields;
+import com.theocean.fundering.domain.member.domain.constant.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "user",
+@Table(name = "member",
     indexes = @Index(columnList = "email", unique = true)
 )
 @Entity
-public class User {
+public class Member extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -35,17 +33,13 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
 
-    /*
-        AuditingEntity로 리팩토링 예정
-    */
+    private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private String refreshToken; // 리프레시 토큰
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt;
+    private String profileImage; // 프로필 이미지
+
+    private boolean isAdmin;
 
     public void changeNickname(String nickname){
         this.nickname = nickname;
@@ -55,19 +49,25 @@ public class User {
         this.password = password;
     }
 
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
+    }
+
     @Builder
-    public User(String nickname, String password, String email, UserRole userRole) {
+    public Member(Long userId, String nickname, String password, String email, UserRole userRole, String profileImage) {
+        this.userId = userId;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
+        this.profileImage = profileImage;
         this.userRole = userRole;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return Objects.equals(userId, user.userId);
+        if (!(o instanceof Member member)) return false;
+        return Objects.equals(userId, member.userId);
     }
 
     @Override

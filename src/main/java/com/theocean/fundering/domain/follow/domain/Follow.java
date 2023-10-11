@@ -2,7 +2,7 @@ package com.theocean.fundering.domain.follow.domain;
 
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.user.domain.User;
+import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,10 +19,10 @@ import java.util.Objects;
 public class Follow {
     @Id
     @GeneratedValue
-    private Long id;
+    private Long followId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Celebrity celebrity;
@@ -31,11 +31,11 @@ public class Follow {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Follow follow)) return false;
-        return Objects.equals(id, follow.id);
+        return Objects.equals(followId, follow.followId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(followId);
     }
 }

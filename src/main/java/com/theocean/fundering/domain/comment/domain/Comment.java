@@ -1,73 +1,91 @@
 package com.theocean.fundering.domain.comment.domain;
 
 
-import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="comment")
-public class Comment {
+@SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE comment_id = ?")
+public class Comment extends AuditingFields {
 
+    // PK
     @Id
-    @Column(name = "COMMENT_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
+    // 작성자의 식별자
+    @Column(nullable = false)
+    private Long writerId;
 
-    @Column(name = "USER_ID", nullable = false)
-    private Long userId;
-
-    @Column(name = "POST_ID", nullable = false)
+    // 게시물의 식별자
+    @Column(nullable = false)
     private Long postId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User writer;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Post post;
-
+    // 댓글 내용
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
-
+    // 삭제 여부
     @Column(nullable = false)
     private boolean isDeleted;
 
+    // 대댓글 유무 - true이면 답글이 존재하므로 대댓글임을 의미함
     @Column(nullable = false)
-    private boolean isReply;
+    private boolean hasReply;
+
+    /*
+        commentOrder는 댓글이 생성될 때 부여받는 순서이다.
+        Comment에서는 부모댓글의 PK를 필드값으로 갖는 대신에 부모 댓글 순서를 필드값으로 가지고 있는다.
+        만약 부모댓글이 없을 경우 자기자신의 commentOrder를 parentCommentOrder필드값으로 갖는다.
+    */
+    @Column
+    private Long parentCommentOrder;
 
     @Column(nullable = false)
-    private Long parentComment;
+    private Long commentOrder;
 
+    // 대댓글 수
     @Column(nullable = false)
-    private int commentOrder;
-
-    @Column(nullable = false)
-    private int replyCount;
+    private int childCommentCount;
 
     @Builder
-    public Comment(User writer, String content){
-        this.writer = writer;
+    public Comment(Long writerId, Long postId, String content, Long commentOrder) {
+        this.writerId = writerId;
+        this.postId = postId;
         this.content = content;
+        this.commentOrder = commentOrder;
+        this.hasReply = false;
+        this.parentCommentOrder = null;
+        this.childCommentCount = 0;
+        this.isDeleted = false;
     }
+
+
+    public void updatehasReply(Boolean hasReply) {
+        this.hasReply = hasReply;
+    }
+
+    public void updateParentCommentOrder(Long parentCommentOrder) {
+        this.parentCommentOrder = parentCommentOrder;
+    }
+
+    public void increaseChildCommentCount() {
+        this.childCommentCount++;
+    }
+
 
     @Override
     public boolean equals(Object o) {
