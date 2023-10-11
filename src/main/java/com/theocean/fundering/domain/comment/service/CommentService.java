@@ -98,8 +98,7 @@ public class CommentService {
         return new CommentResponse.commentsDTO(
                 comment,
                 writer.getNickname(),
-                "ImageURL_Example"
-                //writer.getProfileImage()  // Todo: 유저 ProfileImage필드 추가 이후 리팩토링 예정
+                writer.getProfileImage()
         );
     }
 

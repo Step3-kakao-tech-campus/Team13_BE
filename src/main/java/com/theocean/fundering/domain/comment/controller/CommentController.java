@@ -3,11 +3,12 @@ package com.theocean.fundering.domain.comment.controller;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.domain.comment.service.CommentService;
+import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,9 +19,11 @@ public class CommentController {
 
     // (기능) 댓글 작성
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<?> createComment(@RequestBody @Valid CommentRequest.saveDTO commentRequest, @PathVariable long postId) {
-        // TODO: memberId 부분은 authentication를 통해 작성자 확인 필요
-        commentService.createComment(1L, postId, commentRequest);
+    public ResponseEntity<?> createComment(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody @Valid CommentRequest.saveDTO commentRequest, @PathVariable long postId) {
+
+        Long memberId = userDetails.getMember().getUserId();
+        commentService.createComment(memberId, postId, commentRequest);
+
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
@@ -31,15 +34,17 @@ public class CommentController {
                                          @RequestParam(required = false, defaultValue = "5") int pageSize) {
 
         CommentResponse.findAllDTO response = commentService.getCommentsDtoByPostId(postId, lastComment, pageSize);
+
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 
     // (기능) 댓글 삭제
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable long postId, @PathVariable long commentId) {
-        // TODO: authentication를 통해 작성자 확인 필요
-        Long memberId = 1L;  // 임시 코드, 실제로는 인증 정보에서 가져와야 함
+    public ResponseEntity<?> deleteComment(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable long postId, @PathVariable long commentId) {
+
+        Long memberId = userDetails.getMember().getUserId();
         commentService.deleteComment(memberId, postId, commentId);
+
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 }
