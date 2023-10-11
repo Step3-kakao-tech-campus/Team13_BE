@@ -5,6 +5,7 @@ import com.theocean.fundering.domain.comment.domain.Comment;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -17,9 +18,12 @@ public class CommentResponse {
         @JsonProperty("isLastPage")
         private final boolean isLastPage;
 
-        public findAllDTO(List<commentsDTO> comments, boolean isLastPage) {
+        private final Long lastCommentOrder;
+
+        public findAllDTO(List<commentsDTO> comments, boolean isLastPage, Long lastCommentOrder) {
             this.comments = comments;
             this.isLastPage = isLastPage;
+            this.lastCommentOrder = lastCommentOrder;
         }
 
         public boolean getIsLastPage() {
@@ -39,7 +43,7 @@ public class CommentResponse {
 
         @JsonProperty("isDeleted")
         private final boolean isDeleted;
-        private final LocalDateTime createdAt;
+        private final long createdAt;
 
         public commentsDTO(Comment comment, String writerName, String writerProfile) {
             this.commentId = comment.getCommentId();
@@ -50,9 +54,12 @@ public class CommentResponse {
             this.parentCommentOrder = comment.getParentCommentOrder();
             this.commentOrder = comment.getCommentOrder();
             this.isDeleted = comment.isDeleted();
-            this.createdAt = comment.getCreatedAt();
+            this.createdAt = toEpochSecond(comment.getCreatedAt());
         }
 
+        private long toEpochSecond(LocalDateTime localDateTime) {
+            return localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        }
         public boolean getIsDeleted() {
             return isDeleted;
         }

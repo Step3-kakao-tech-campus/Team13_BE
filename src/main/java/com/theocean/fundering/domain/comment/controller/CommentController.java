@@ -3,15 +3,12 @@ package com.theocean.fundering.domain.comment.controller;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.domain.comment.service.CommentService;
-import com.theocean.fundering.domain.comment.domain.Comment;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,10 +27,10 @@ public class CommentController {
     // (기능) 댓글 목록 조회
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<?> getComments(@PathVariable long postId,
-                                         @RequestParam(required = false, defaultValue = "0") int pageIndex,
-                                         @RequestParam(required = false, defaultValue = "3") int pageSize) {
+                                         @RequestParam(required = false, defaultValue = "0") Long lastComment,
+                                         @RequestParam(required = false, defaultValue = "5") int pageSize) {
 
-        CommentResponse.findAllDTO response = commentService.getCommentsDtoByPostId(postId, PageRequest.of(pageIndex, pageSize));
+        CommentResponse.findAllDTO response = commentService.getCommentsDtoByPostId(postId, lastComment, pageSize);
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 

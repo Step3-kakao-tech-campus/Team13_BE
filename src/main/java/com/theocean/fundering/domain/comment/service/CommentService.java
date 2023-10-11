@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.comment.service;
 
 import com.theocean.fundering.domain.comment.domain.Comment;
+import com.theocean.fundering.domain.comment.repository.CustomCommentRepositoryImpl;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class CommentService {
 
+    private final CustomCommentRepositoryImpl customCommentRepository;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
@@ -103,27 +105,34 @@ public class CommentService {
 
 
     // (기능) 댓글 목록 조회 - 컨트롤러로 findAllDTO 리턴
-    public CommentResponse.findAllDTO getCommentsDtoByPostId(long postId, PageRequest pageRequest) {
-
+    public CommentResponse.findAllDTO getCommentsDtoByPostId(long postId, Long lastComment, int pageSize) {
         // 게시글 존재 여부 확인
         if (!postRepository.existsById(postId)) {
             throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
         }
 
-        // 댓글 페이징
-        Page<Comment> commentsPage;
+        List<Comment> comments;
         try {
-            commentsPage = commentRepository.findByPostIdOrdered(postId, pageRequest);
-        }catch(Exception e) {
+            comments = customCommentRepository.findCommentsByPostIdAndCursor(postId, lastComment, pageSize);
+        } catch(Exception e) {
             throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
         }
 
-
-        List<CommentResponse.commentsDTO> commentsDtos = commentsPage.getContent().stream()
+        // 응답 DTO의 comments부분
+        List<CommentResponse.commentsDTO> commentsDtos = comments.stream()
                 .map(this::createCommentsDTO)
                 .collect(Collectors.toList());
 
-        return new CommentResponse.findAllDTO(commentsDtos, commentsPage.isLast());
+        // 응답 DTO의 isLastPage부분
+        boolean isLast = comments.size() < pageSize;
+
+        // 응답 DTO의 lastCommentOrder부분
+        Long lastCommentOrder = null;
+        if (!comments.isEmpty()) {
+            lastCommentOrder = comments.get(comments.size() - 1).getCommentOrder();
+        }
+
+        return new CommentResponse.findAllDTO(commentsDtos, isLast, lastCommentOrder);
     }
 
 
