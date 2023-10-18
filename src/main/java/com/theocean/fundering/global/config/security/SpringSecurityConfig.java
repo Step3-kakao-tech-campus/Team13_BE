@@ -3,17 +3,21 @@ package com.theocean.fundering.global.config.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.global.jwt.JwtProvider;
-import com.theocean.fundering.global.jwt.service.LoginService;
-import com.theocean.fundering.global.jwt.userInfo.CustomJsonUsernamePasswordAuthenticationFilter;
 import com.theocean.fundering.global.jwt.filter.JwtAuthenticationFilter;
 import com.theocean.fundering.global.jwt.handler.LoginFailureHandler;
 import com.theocean.fundering.global.jwt.handler.LoginSuccessHandler;
+import com.theocean.fundering.global.jwt.service.LoginService;
+import com.theocean.fundering.global.jwt.userInfo.CustomJsonUsernamePasswordAuthenticationFilter;
+import com.theocean.fundering.global.oauth2.handler.OAuth2LoginFailureHandler;
+import com.theocean.fundering.global.oauth2.handler.OAuth2LoginSuccessHandler;
+import com.theocean.fundering.global.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,15 +34,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
 @Configuration
+@EnableMethodSecurity
 @EnableWebSecurity
 public class SpringSecurityConfig {
     private final MemberRepository memberRepository;
-
     private final ObjectMapper objectMapper;
-
     private final LoginService loginService;
-
     private final JwtProvider jwtProvider;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -82,12 +88,20 @@ public class SpringSecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(request -> request
-                        // /members/** URL 인증 필요
-                        .requestMatchers(new AntPathRequestMatcher("/members/**"))
-                        .authenticated()
-                        .anyRequest().permitAll()
-                );
+                // /members/** URL 인증 필요
+                .requestMatchers(new AntPathRequestMatcher("/members/**"))
+                .authenticated()
+                .anyRequest().permitAll()
+        );
 
+        // oauth2 로그인 설정
+        http.oauth2Login(oauth2Login -> oauth2Login
+                .successHandler(oAuth2LoginSuccessHandler)
+                .failureHandler(oAuth2LoginFailureHandler)
+                .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
+                        .userService(customOAuth2UserService)
+                )
+        );
         return http.build();
     }
     public CorsConfigurationSource configurationSource() {

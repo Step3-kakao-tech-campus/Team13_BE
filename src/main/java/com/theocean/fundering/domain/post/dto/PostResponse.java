@@ -1,7 +1,5 @@
 package com.theocean.fundering.domain.post.dto;
 
-import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.post.domain.Post;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +25,6 @@ public class PostResponse {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private int participant;
-        private double progress;
-        private int difference;
 
 
         public FindByPostIdDTO(Post post){
@@ -45,8 +41,6 @@ public class PostResponse {
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
             this.participant = post.getParticipants();
-            this.progress = ((double) post.getTargetPrice() / post.getAccount().getFundingAmount()) * 100;
-            this.difference = post.getTargetPrice() - post.getAccount().getFundingAmount();
         }
     }
 
@@ -62,10 +56,10 @@ public class PostResponse {
         private String title;
         private String thumbnail;
         private int targetPrice;
-        private double progress;
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
+        private boolean isLast;
 
         public FindAllDTO(Post post){
             this.postId = post.getPostId();
@@ -76,10 +70,10 @@ public class PostResponse {
             this.title = post.getTitle();
             this.thumbnail = post.getThumbnail();
             this.targetPrice = post.getTargetPrice();
-            this.progress = ((double) post.getTargetPrice() / post.getAccount().getFundingAmount()) * 100;
             this.deadline = post.getDeadline();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
+            this.isLast = false;
         }
     }
 

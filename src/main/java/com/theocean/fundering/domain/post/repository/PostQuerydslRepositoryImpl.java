@@ -16,7 +16,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<PostResponse.FindAllDTO> findAll(Long postId, int pageSize) {
+    public List<PostResponse.FindAllDTO> findAll(Long postId) {
         return jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.title,
@@ -30,12 +30,12 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
                 .from(post)
                 .where(ltPostId(postId))
                 .orderBy(post.postId.desc())
-                .limit(pageSize)
+                .limit(12)
                 .fetch();
     }
 
     @Override
-    public List<PostResponse.FindAllDTO> findAllByWriterId(Long postId, Long writerId, int pageSize) {
+    public List<PostResponse.FindAllDTO> findAllByWriterId(Long postId, Long writerId) {
         return jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.title,
@@ -49,7 +49,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
                 .from(post)
                 .where(ltPostId(postId), eqWriter(writerId))
                 .orderBy(post.postId.desc())
-                .limit(pageSize)
+                .limit(12)
                 .fetch();
     }
 
@@ -62,6 +62,6 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
     }
 
     private BooleanExpression eqWriter(Long writerId){
-        return post.writerId.eq(writerId);
+        return post.writer.userId.eq(writerId);
     }
 }

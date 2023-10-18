@@ -22,7 +22,7 @@ public class Account {
     @ManyToOne
     private Member member;
 
-    @ManyToOne
+    @OneToOne
     private Post post;
 
     @Column

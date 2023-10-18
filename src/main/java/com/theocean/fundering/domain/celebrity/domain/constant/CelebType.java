@@ -1,9 +1,10 @@
-package com.theocean.fundering.celebrity.domain.constant;
+package com.theocean.fundering.domain.celebrity.domain.constant;
 
 public enum CelebType {
     SINGER,
     ACTOR,
     COMEDIAN,
     SPORT,
-    INFLUENCER;
+    INFLUENCER,
+    ETC
 }

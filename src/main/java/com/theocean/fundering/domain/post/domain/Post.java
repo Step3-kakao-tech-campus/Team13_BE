@@ -3,6 +3,7 @@ package com.theocean.fundering.domain.post.domain;
 
 import com.theocean.fundering.domain.account.domain.Account;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
+import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.*;
@@ -16,7 +17,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
@@ -81,5 +81,14 @@ public class Post extends AuditingFields {
     @Override
     public int hashCode() {
         return Objects.hash(postId);
+    }
+
+    public void update(PostRequest.PostEditDTO dto){
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.thumbnail = dto.getThumbnail();
+        this.targetPrice = dto.getTargetPrice();
+        this.deadline = dto.getDeadline();
+        this.modifiedAt = dto.getModifiedAt();
     }
 }

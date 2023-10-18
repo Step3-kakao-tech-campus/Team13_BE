@@ -11,5 +11,6 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostQuerydslRepository {
     Optional<Post> findByPostId(Long postId);
+    void deleteByPostId(Long postId);
 
 }
