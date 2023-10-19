@@ -1,6 +1,5 @@
 package com.theocean.fundering.domain.comment.domain;
 
-
 import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,82 +7,61 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Objects;
+
+/*
+ 로그인한 사용자는 댓글 작성 부분에 입력을 하여 댓글을 작성할 수 있다.
+ 또한 댓글 옆에 댓글 작성 버튼을 클릭하여 대댓글을 작성할 수 있다.
+ 대댓글에 대한 대댓글은 허용되지 않는다.
+*/
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name="comment")
+@Table(name = "comment")
 @SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE comment_id = ?")
 public class Comment extends AuditingFields {
 
-    // PK
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
-    // 작성자의 식별자
     @Column(nullable = false)
     private Long writerId;
 
-    // 게시물의 식별자
     @Column(nullable = false)
     private Long postId;
 
-    // 댓글 내용
     @Column(nullable = false)
     private String content;
 
-    // 삭제 여부
     @Column(nullable = false)
     private boolean isDeleted;
 
-    // 대댓글 유무 - true이면 답글이 존재하므로 대댓글임을 의미함
     @Column(nullable = false)
-    private boolean hasReply;
-
-    /*
-        commentOrder는 댓글이 생성될 때 부여받는 순서이다.
-        Comment에서는 부모댓글의 PK를 필드값으로 갖는 대신에 부모 댓글 순서를 필드값으로 가지고 있는다.
-        만약 부모댓글이 없을 경우 자기자신의 commentOrder를 parentCommentOrder필드값으로 갖는다.
-    */
-    @Column
-    private Long parentCommentOrder;
+    private int ref;  // 댓글 조회시 분류를 위한 그룹핑 - 대댓글은 원댓글의 필드값을 따라가고, 원댓글의 경우 자신의 PK값을 갖는다
 
     @Column(nullable = false)
-    private Long commentOrder;
+    private int refOrder;  // 같은 그룹내에서 댓글 순서 - 생성순, 원댓글은 0
 
-    // 대댓글 수
     @Column(nullable = false)
-    private int childCommentCount;
+    private int depth;  // 화면에 표시되는 들여쓰기 수준 - 원댓글 0부터 시작
 
     @Builder
-    public Comment(Long writerId, Long postId, String content, Long commentOrder) {
+    public Comment(Long writerId, Long postId, String content) {
         this.writerId = writerId;
         this.postId = postId;
         this.content = content;
-        this.commentOrder = commentOrder;
-        this.hasReply = false;
-        this.parentCommentOrder = null;
-        this.childCommentCount = 0;
         this.isDeleted = false;
     }
 
-
-    public void updatehasReply(Boolean hasReply) {
-        this.hasReply = hasReply;
-    }
-
-    public void updateParentCommentOrder(Long parentCommentOrder) {
-        this.parentCommentOrder = parentCommentOrder;
-    }
-
-    public void increaseChildCommentCount() {
-        this.childCommentCount++;
+    public void updateCommentProperties(int ref, int refOrder, int depth) {
+        this.ref = ref;
+        this.refOrder = refOrder;
+        this.depth = depth;
     }
 
 
@@ -98,5 +76,4 @@ public class Comment extends AuditingFields {
     public int hashCode() {
         return Objects.hash(commentId);
     }
-
 }

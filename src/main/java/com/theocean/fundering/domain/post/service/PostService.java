@@ -9,6 +9,7 @@ import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,12 +40,31 @@ public class PostService {
 
     }
 
-    public List<PostResponse.FindAllDTO> findAll(Long postId, int pageSize){
-        return postRepository.findAll(postId, pageSize);
+    public List<PostResponse.FindAllDTO> findAll(Long postId){
+        var postList = postRepository.findAll(postId);
+        var checkForNext = postRepository.findAll(postList.get(-1).getPostId() + 1);
+        if (checkForNext == null)
+            postList.get(-1).setLast(true);
+        return postList;
     }
 
-    public List<PostResponse.FindAllDTO> findAllByWriterId(Long postId, Long writerId, int pageSize){
-        return postRepository.findAllByWriterId(postId, writerId, pageSize);
+    public List<PostResponse.FindAllDTO> findAllByWriterId(Long postId, Long writerId){
+        var postList = postRepository.findAllByWriterId(postId, writerId);
+        var checkForNext = postRepository.findAllByWriterId(postList.get(-1).getPostId() + 1, writerId);
+        if (checkForNext == null)
+            postList.get(-1).setLast(true);
+        return postList;
+    }
+    @Transactional
+    public Long editPost(Long postId, PostRequest.PostEditDTO postEditDTO){
+        Post postPS = postRepository.findByPostId(postId).orElseThrow();
+        postPS.update(postEditDTO);
+
+        return postId;
+    }
+
+    public void deletePost(Long postId){
+        postRepository.deleteByPostId(postId);
     }
 
 }

@@ -20,7 +20,7 @@ public class PostController {
 
     @GetMapping("/posts")
     public ResponseEntity<?> findAll(@RequestParam(value = "postId") Long postId, @RequestParam(value = "pageSize") int pageSize){
-        List<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId, pageSize);
+        List<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId);
         ApiUtils.ApiResult<?> apiResult = ApiUtils.success(responseDTO);
 
         return ResponseEntity.ok(apiResult);
@@ -41,15 +41,17 @@ public class PostController {
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
-//    @PutMapping("/fundings/{postId}/edit")
-//    public ResponseEntity<?> editPost(@PathVariable Long postId, PostRequest.PostWriteDTO postWriteDTO){
-//
-//    }
-//
-//    @DeleteMapping("/fundings/{postId}/delete")
-//    public ResponseEntity<?> deletePost(@PathVariable Long postId){
-//
-//    }
+    @PutMapping("/fundings/{postId}/edit")
+    public ResponseEntity<?> editPost(@PathVariable Long postId, PostRequest.PostEditDTO postEditDTO){
+        Long editedPost = postService.editPost(postId, postEditDTO);
+        return ResponseEntity.ok(ApiUtils.success(editedPost));
+    }
+
+    @DeleteMapping("/fundings/{postId}/delete")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId){
+        postService.deletePost(postId);
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
 
 
 

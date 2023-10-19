@@ -1,5 +1,6 @@
 package com.theocean.fundering.domain.member.controller;
 
+import com.theocean.fundering.domain.member.dto.EmailRequestDTO;
 import com.theocean.fundering.domain.member.service.MemberService;
 import com.theocean.fundering.domain.member.dto.MemberRequestDTO;
 import com.theocean.fundering.global.utils.ApiUtils;
@@ -14,6 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MemberController {
     private final MemberService memberService;
+
+    @PostMapping("/signup/check")
+    public ResponseEntity<?> checkEmail(@RequestBody @Valid EmailRequestDTO emailRequestDTO , Error error){
+        memberService.sameCheckEmail(emailRequestDTO.getEmail());
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody @Valid MemberRequestDTO requestDTO, Error error){

@@ -51,4 +51,36 @@ public class PostRequest {
 
     }
 
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @ToString
+    public static class PostEditDTO{
+        private String title;
+        private String content;
+        private String thumbnail;
+        private int targetPrice;
+        private LocalDateTime deadline;
+        private LocalDateTime modifiedAt;
+
+        public Post toEntity(){
+            return Post.builder()
+                    .title(title)
+                    .content(content)
+                    .thumbnail(thumbnail)
+                    .targetPrice(targetPrice)
+                    .deadline(deadline)
+                    .build();
+        }
+        @Builder
+        public PostEditDTO(String title, String content, String thumbnail, int targetPrice, LocalDateTime deadline){
+            this.title = title;
+            this.content = content;
+            this.thumbnail = thumbnail;
+            this.targetPrice = targetPrice;
+            this.deadline = deadline;
+            this.modifiedAt = LocalDateTime.now();
+        }
+    }
+
 }
