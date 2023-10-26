@@ -13,6 +13,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 import java.util.List;
 
 @ControllerAdvice
@@ -59,10 +61,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResult, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        ApiUtils.ApiResult<?> apiResult = ApiUtils.error("잘못된 요청값입니다.", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResult, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> accessDeniedError(AccessDeniedException e) {
-        ApiUtils.ApiResult<?> apiResult = ApiUtils.error("접근할 수 없습니다", HttpStatus.FORBIDDEN);
+        ApiUtils.ApiResult<?> apiResult = ApiUtils.error("접근 권한이 없습니다.", HttpStatus.FORBIDDEN);
         return new ResponseEntity<>(apiResult, HttpStatus.FORBIDDEN);
     }
 

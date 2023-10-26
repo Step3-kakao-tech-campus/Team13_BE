@@ -35,12 +35,11 @@ logging.level:
 cloud:
   aws:
     s3:
-      bucket: "버킷 이름"
+      bucket: fundering-img
     region:
       static: ap-northeast-2
       auto: false
     stack:
       auto: false
     credentials:
-      access-key: "{발급받은 access key}"
-      secret-key: "{발급받은 secret key}"
+      profile-name: default

@@ -89,7 +89,7 @@ public class SpringSecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 // /members/** URL 인증 필요
-                .requestMatchers(new AntPathRequestMatcher("/members/**"))
+                .requestMatchers(new AntPathRequestMatcher("/members/**"), new AntPathRequestMatcher("/posts/write"))
                 .authenticated()
                 .anyRequest().permitAll()
         );
