@@ -1,20 +1,20 @@
 package com.theocean.fundering.global.errors.exception;
 
-import com.theocean.fundering.global.utils.ApiUtils;
+import com.theocean.fundering.global.utils.ApiResult;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
 public class Exception401 extends RuntimeException {
-    public Exception401(String message) {
+    public Exception401(final String message) {
         super(message);
     }
 
-    public ApiUtils.ApiResult<?> body(){
-        return ApiUtils.error(getMessage(), HttpStatus.UNAUTHORIZED);
+    public ApiResult<?> body() {
+        return ApiResult.error(getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
-    public HttpStatus status(){
+    public HttpStatus status() {
         return HttpStatus.UNAUTHORIZED;
     }
 }

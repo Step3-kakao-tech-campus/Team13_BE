@@ -13,8 +13,8 @@ public class PostResponse {
     @Setter
     public static class FindByPostIdDTO { // 게시글 열람 DTO
         private Long postId;
-        private Long writerId;
         private String writer;
+        private String writerImg;
         private String celebrity;
         private String celebImg;
         private String title;
@@ -26,32 +26,31 @@ public class PostResponse {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private int participant;
+        private boolean eqWriter;
 
-
-        public FindByPostIdDTO(Post post){
-            this.postId = post.getPostId();
-            this.writerId = post.getWriter().getUserId();
-            this.writer = post.getWriter().getNickname();
-            this.celebrity = post.getCelebrity().getCelebName();
-            this.celebImg = post.getCelebrity().getProfileImage();
-            this.title = post.getTitle();
-            this.content = post.getContent();
-            this.thumbnail = post.getThumbnail();
-            this.targetPrice = post.getTargetPrice();
-            this.currentAmount = post.getAccount().getFundingAmount();
-            this.deadline = post.getDeadline();
-            this.createdAt = post.getCreatedAt();
-            this.modifiedAt = post.getModifiedAt();
-            this.participant = post.getParticipants();
+        public FindByPostIdDTO(final Post post) {
+            postId = post.getPostId();
+            writer = post.getWriter().getNickname();
+            writerImg = post.getWriter().getProfileImage();
+            celebrity = post.getCelebrity().getCelebName();
+            celebImg = post.getCelebrity().getProfileImage();
+            title = post.getTitle();
+            content = post.getIntroduction();
+            thumbnail = post.getThumbnail();
+            targetPrice = post.getTargetPrice();
+            currentAmount = post.getAccount().getBalance();
+            deadline = post.getDeadline();
+            createdAt = post.getCreatedAt();
+            modifiedAt = post.getModifiedAt();
+            participant = post.getParticipants();
+            eqWriter = false;
         }
     }
 
-
     @Getter
     @Setter
-    public static class FindAllDTO{
+    public static class FindAllDTO {
         private Long postId;
-        private Long writerId;
         private String writer;
         private String celebrity;
         private String celebImg;
@@ -63,19 +62,18 @@ public class PostResponse {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
 
-        public FindAllDTO(Post post){
-            this.postId = post.getPostId();
-            this.writerId = post.getWriter().getUserId();
-            this.writer = post.getWriter().getNickname();
-            this.celebrity = post.getCelebrity().getCelebName();
-            this.celebImg = post.getCelebrity().getProfileImage();
-            this.title = post.getTitle();
-            this.thumbnail = post.getThumbnail();
-            this.targetPrice = post.getTargetPrice();
-            this.currentAmount = post.getAccount().getFundingAmount();
-            this.deadline = post.getDeadline();
-            this.createdAt = post.getCreatedAt();
-            this.modifiedAt = post.getModifiedAt();
+        public FindAllDTO(final Post post) {
+            postId = post.getPostId();
+            writer = post.getWriter().getNickname();
+            celebrity = post.getCelebrity().getCelebName();
+            celebImg = post.getCelebrity().getProfileImage();
+            title = post.getTitle();
+            thumbnail = post.getThumbnail();
+            targetPrice = post.getTargetPrice();
+            currentAmount = post.getAccount().getBalance();
+            deadline = post.getDeadline();
+            createdAt = post.getCreatedAt();
+            modifiedAt = post.getModifiedAt();
         }
     }
 
