@@ -1,6 +1,6 @@
 package com.theocean.fundering.global.errors.exception;
 
-import com.theocean.fundering.global.utils.ApiUtils;
+import com.theocean.fundering.global.utils.ApiResult;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -8,15 +8,15 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class Exception400 extends RuntimeException {
 
-    public Exception400(String message) {
+    public Exception400(final String message) {
         super(message);
     }
 
-    public ApiUtils.ApiResult<?> body(){
-        return ApiUtils.error(getMessage(), HttpStatus.BAD_REQUEST);
+    public ApiResult<?> body() {
+        return ApiResult.error(getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    public HttpStatus status(){
+    public HttpStatus status() {
         return HttpStatus.BAD_REQUEST;
     }
 }

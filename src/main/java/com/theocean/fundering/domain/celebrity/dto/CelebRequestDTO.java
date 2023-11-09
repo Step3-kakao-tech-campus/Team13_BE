@@ -1,31 +1,29 @@
 package com.theocean.fundering.domain.celebrity.dto;
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
+import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
-import com.theocean.fundering.domain.celebrity.domain.constant.CelebType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor // Type definition error 방지
 public class CelebRequestDTO {
     private String celebName;
     private CelebGender celebGender;
-    private CelebType celebType;
+    private CelebCategory celebCategory;
     private String celebGroup;
-    private String profileImage;
 
-    public Celebrity mapToEntity(){
+    public Celebrity mapToEntity() {
         return Celebrity.builder()
                 .celebName(celebName)
                 .celebGender(celebGender)
-                .celebType(celebType)
+                .celebCategory(celebCategory)
                 .celebGroup(celebGroup)
-                .profileImage(profileImage)
                 .build();
     }
 }

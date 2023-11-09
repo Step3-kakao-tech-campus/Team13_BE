@@ -1,19 +1,20 @@
 package com.theocean.fundering.global.errors.exception;
 
-import com.theocean.fundering.global.utils.ApiUtils;
+import com.theocean.fundering.global.utils.ApiResult;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
 @Getter
 public class Exception403 extends RuntimeException {
-    public Exception403(String message) {
+    public Exception403(final String message) {
         super(message);
     }
 
-    public ApiUtils.ApiResult<?> body(){
-        return ApiUtils.error(getMessage(), HttpStatus.FORBIDDEN);
+    public ApiResult<?> body() {
+        return ApiResult.error(getMessage(), HttpStatus.FORBIDDEN);
     }
 
-    public HttpStatus status(){
+    public HttpStatus status() {
         return HttpStatus.FORBIDDEN;
     }
 }

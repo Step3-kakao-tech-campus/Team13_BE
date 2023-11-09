@@ -13,116 +13,125 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
-
-import static  com.theocean.fundering.domain.post.domain.QPost.post;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static com.theocean.fundering.domain.post.domain.QPost.post;
 
 @RequiredArgsConstructor
-public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
+public class PostQuerydslRepositoryImpl implements PostQuerydslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Slice<PostResponse.FindAllDTO> findAll(@Nullable Long postId, Pageable pageable) {
-        OrderSpecifier[] orderSpecifiers = createOrderSpecifier(pageable.getSort());
+    public Slice<PostResponse.FindAllDTO> findAll(@Nullable final Long postId, final Pageable pageable) {
+        final OrderSpecifier[] orderSpecifiers = createOrderSpecifier(pageable.getSort());
 
-        List<PostResponse.FindAllDTO> contents =  jpaQueryFactory
+        final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
-                        post.title,
-                        post.thumbnail,
-                        post.writer,
-                        post.celebrity,
-                        post.targetPrice,
-                        post.account,
-                        post.deadline,
-                        post.createdAt))
+                        post.postId.as("postId"),
+                        post.writer.userId.as("writerId"),
+                        post.writer.nickname.as("writer"),
+                        post.celebrity.celebId.as("celebId"),
+                        post.celebrity.celebName.as("celebrity"),
+                        post.celebrity.profileImage.as("celebImg"),
+                        post.title.as("title"),
+                        post.thumbnail.as("thumbnail"),
+                        post.targetPrice.as("targetPrice"),
+                        post.account.balance.as("currentAmount"),
+                        post.deadline.as("deadline"),
+                        post.createdAt.as("createdAt"),
+                        post.modifiedAt.as("modifiedAt"),
+                        post.heartCount.as("heartCount")))
                 .from(post)
                 .where(ltPostId(postId))
                 .orderBy(orderSpecifiers)
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        boolean hasNext = false;
-        if(contents.size() > pageable.getPageSize()){
-            hasNext = true;
-        }
+        final boolean hasNext = contents.size() > pageable.getPageSize();
         return new SliceImpl<>(contents, pageable, hasNext);
     }
 
     @Override
-    public Slice<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, Long writerId, Pageable pageable) {
-        List<PostResponse.FindAllDTO> contents = jpaQueryFactory
+    public Slice<PostResponse.FindAllDTO> findAllByWriterName(@Nullable final Long postId, final String nickname, final Pageable pageable) {
+        final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
-                        post.title,
-                        post.thumbnail,
-                        post.writer,
-                        post.celebrity,
-                        post.targetPrice,
-                        post.account,
-                        post.deadline,
-                        post.createdAt))
+                        post.postId.as("postId"),
+                        post.writer.userId.as("writerId"),
+                        post.writer.nickname.as("writer"),
+                        post.celebrity.celebId.as("celebId"),
+                        post.celebrity.celebName.as("celebrity"),
+                        post.celebrity.profileImage.as("celebImg"),
+                        post.title.as("title"),
+                        post.thumbnail.as("thumbnail"),
+                        post.targetPrice.as("targetPrice"),
+                        post.account.balance.as("currentAmount"),
+                        post.deadline.as("deadline"),
+                        post.createdAt.as("createdAt"),
+                        post.modifiedAt.as("modifiedAt"),
+                        post.heartCount.as("heartCount")))
                 .from(post)
-                .where(ltPostId(postId), eqWriter(writerId))
+                .where(ltPostId(postId), eqWriter(nickname))
                 .orderBy(post.postId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
-        boolean hasNext = false;
-        if(contents.size() > pageable.getPageSize()){
-            hasNext = true;
-        }
+        final boolean hasNext = contents.size() > pageable.getPageSize();
         return new SliceImpl<>(contents, pageable, hasNext);
     }
+
     @Override
-    public Slice<PostResponse.FindAllDTO> findAllByKeyword(@Nullable Long postId, String keyword, Pageable pageable){
-        List<PostResponse.FindAllDTO> contents = jpaQueryFactory
+    public Slice<PostResponse.FindAllDTO> findAllByKeyword(@Nullable final Long postId, final String keyword, final Pageable pageable) {
+        final List<PostResponse.FindAllDTO> contents = jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
-                        post.title,
-                        post.thumbnail,
-                        post.writer,
-                        post.celebrity,
-                        post.targetPrice,
-                        post.account,
-                        post.deadline,
-                        post.createdAt))
+                        post.postId.as("postId"),
+                        post.writer.userId.as("writerId"),
+                        post.writer.nickname.as("writer"),
+                        post.celebrity.celebId.as("celebId"),
+                        post.celebrity.celebName.as("celebrity"),
+                        post.celebrity.profileImage.as("celebImg"),
+                        post.title.as("title"),
+                        post.thumbnail.as("thumbnail"),
+                        post.targetPrice.as("targetPrice"),
+                        post.account.balance.as("currentAmount"),
+                        post.deadline.as("deadline"),
+                        post.createdAt.as("createdAt"),
+                        post.modifiedAt.as("modifiedAt"),
+                        post.heartCount.as("heartCount")))
                 .from(post)
                 .where(ltPostId(postId), containKeyword(keyword))
                 .orderBy(post.postId.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
-        boolean hasNext = false;
-        if(contents.size() > pageable.getPageSize()){
-            hasNext = true;
-        }
+        final boolean hasNext = contents.size() > pageable.getPageSize();
         return new SliceImpl<>(contents, pageable, hasNext);
     }
 
-    private OrderSpecifier[] createOrderSpecifier(Sort sort){
-        List<OrderSpecifier> specifiers = new ArrayList<>();
+    private OrderSpecifier[] createOrderSpecifier(final Sort sort) {
+        final List<OrderSpecifier> specifiers = new ArrayList<>();
 
         /* 정렬 조건 추가 시 추가 작성
-        * */
-        if (sort.toString().equals("recent")) {
+         * */
+        if ("recent".equals(sort.toString())) {
             specifiers.add(new OrderSpecifier(Order.DESC, post.createdAt));
-        } else if(sort.toString().equals("deadline")) {
+        } else if ("deadline".equals(sort.toString())) {
             specifiers.add(new OrderSpecifier(Order.DESC, post.deadline));
-        } else if(sort.toString().equals("amount")){
-            specifiers.add(new OrderSpecifier(Order.DESC, post.account.fundingAmount));
+        } else if ("amount".equals(sort.toString())) {
+            specifiers.add(new OrderSpecifier(Order.DESC, post.account.balance));
         }
         return specifiers.toArray(new OrderSpecifier[specifiers.size()]);
     }
 
-    private BooleanExpression ltPostId(@Nullable Long postId){
-        if (postId == null) return null;
+    private BooleanExpression ltPostId(@Nullable final Long postId) {
+        if (null == postId) return null;
         return post.postId.lt(postId);
     }
 
-    private BooleanExpression eqWriter(Long writerId){
-        return post.writer.userId.eq(writerId);
+    private BooleanExpression eqWriter(final String nickname) {
+        return post.writer.nickname.contains(nickname);
     }
-    private BooleanExpression containKeyword(String keyword){
+
+    private BooleanExpression containKeyword(final String keyword) {
         return post.title.contains(keyword);
     }
 
