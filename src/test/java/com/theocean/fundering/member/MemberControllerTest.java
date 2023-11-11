@@ -2,9 +2,8 @@ package com.theocean.fundering.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.member.domain.constant.UserRole;
-import com.theocean.fundering.domain.member.dto.EmailRequestDTO;
-import com.theocean.fundering.domain.member.dto.MemberSignUpRequestDTO;
+import com.theocean.fundering.domain.member.domain.constant.MemberRole;
+import com.theocean.fundering.domain.member.dto.MemberRequest;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +62,7 @@ class MemberControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        final Member member = Member.builder().email(EMAIL).password(delegatingPasswordEncoder.encode(PASSWORD)).nickname(NICKNAME).userRole(UserRole.USER).build();
+        final Member member = Member.builder().email(EMAIL).password(delegatingPasswordEncoder.encode(PASSWORD)).nickname(NICKNAME).userRole(MemberRole.USER).build();
         memberRepository.save(member);
         clear();
     }
@@ -85,7 +84,7 @@ class MemberControllerTest {
     @Test
     void join_test() throws Exception {
         //given
-        final MemberSignUpRequestDTO requestDTO = MemberSignUpRequestDTO.of("test@kakao.com", "password1!", "boseungk");
+        final MemberRequest.SignUpDTO requestDTO = MemberRequest.SignUpDTO.of("test@kakao.com", "password1!", "boseungk");
         final String requestBody = om.writeValueAsString(requestDTO);
 
         //when
@@ -146,7 +145,7 @@ class MemberControllerTest {
     @Test
     void email_success_test() throws Exception {
         //given
-        final EmailRequestDTO requestDTO = EmailRequestDTO.from("test@kakao.com");
+        final MemberRequest.EmailRequestDTO requestDTO = MemberRequest.EmailRequestDTO.from("test@kakao.com");
 
         final String requestBody = om.writeValueAsString(requestDTO);
 
@@ -168,7 +167,7 @@ class MemberControllerTest {
     @Test
     void email_fail_test() throws Exception {
         //given
-        final EmailRequestDTO requestDTO = EmailRequestDTO.from("test@kakaocom");
+        final MemberRequest.EmailRequestDTO requestDTO = MemberRequest.EmailRequestDTO.from("test@kakaocom");
 
         final String requestBody = om.writeValueAsString(requestDTO);
 

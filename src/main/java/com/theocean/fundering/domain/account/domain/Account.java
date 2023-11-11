@@ -40,6 +40,10 @@ public class Account {
         balance = 0;
     }
 
+    public void updateBalance(final int balance) {
+        this.balance = balance;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;

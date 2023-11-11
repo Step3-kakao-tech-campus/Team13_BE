@@ -1,6 +1,7 @@
 package com.theocean.fundering.global.jwt.userInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theocean.fundering.global.errors.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 public class CustomJsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private static final String DEFAULT_LOGIN_REQUEST_URL = "/login";
+    private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/login";
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
     private static final String USERNAME_KEY = "email";
@@ -35,7 +36,7 @@ public class CustomJsonUsernamePasswordAuthenticationFilter extends AbstractAuth
     @Override
     public Authentication attemptAuthentication(final HttpServletRequest request, final HttpServletResponse response) throws AuthenticationException, IOException {
         if (null == request.getContentType() || !request.getContentType().equals(CONTENT_TYPE)) {
-            throw new AuthenticationServiceException("Authentication Content-Type not supported: " + request.getContentType());
+            throw new AuthenticationServiceException(ErrorCode.ER20);
         }
 
         final String messageBody = StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8);

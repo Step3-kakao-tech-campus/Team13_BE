@@ -1,9 +1,11 @@
 package com.theocean.fundering.global.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theocean.fundering.domain.member.repository.AdminRepository;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.global.jwt.JwtProvider;
 import com.theocean.fundering.global.jwt.filter.JwtAuthenticationFilter;
+import com.theocean.fundering.global.jwt.handler.AccessDeniedHandlerImpl;
 import com.theocean.fundering.global.jwt.handler.LoginFailureHandler;
 import com.theocean.fundering.global.jwt.handler.LoginSuccessHandler;
 import com.theocean.fundering.global.jwt.service.LoginService;
@@ -14,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +26,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -35,6 +39,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SpringSecurityConfig {
     private final MemberRepository memberRepository;
+    private final AdminRepository adminRepository;
     private final ObjectMapper objectMapper;
     private final LoginService loginService;
     private final JwtProvider jwtProvider;
@@ -74,7 +79,7 @@ public class SpringSecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 // /members/** URL 인증 필요
-                .requestMatchers(new AntPathRequestMatcher("/members/**"), new AntPathRequestMatcher("/posts/write"))
+                .requestMatchers(new AntPathRequestMatcher("/members/**"))
                 .authenticated()
                 .anyRequest().permitAll()
         );
@@ -106,7 +111,7 @@ public class SpringSecurityConfig {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(memberRepository, objectMapper, jwtProvider);
+        return new LoginSuccessHandler(memberRepository, adminRepository, objectMapper, jwtProvider);
     }
 
     @Bean

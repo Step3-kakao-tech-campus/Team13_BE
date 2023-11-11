@@ -1,6 +1,6 @@
 package com.theocean.fundering.domain.member.domain;
 
-import com.theocean.fundering.domain.member.domain.constant.UserRole;
+import com.theocean.fundering.domain.member.domain.constant.MemberRole;
 import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,7 +32,7 @@ public class Member extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long userId;
+    private Long memberId;
 
     @Setter
     @Column(nullable = false, length = 15, name = "nickname")
@@ -49,9 +49,7 @@ public class Member extends AuditingFields {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
-    private UserRole userRole;
-
-    private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
+    private MemberRole memberRole;
 
     @Column(name = "refresh_token")
     private String refreshToken; // 리프레시 토큰
@@ -59,7 +57,7 @@ public class Member extends AuditingFields {
     @Column(name = "profile_image")
     private String profileImage; // 프로필 이미지
 
-    public void changeNickname(final String nickname){
+    private void changeNickname(final String nickname){
         this.nickname = nickname;
     }
 
@@ -67,45 +65,46 @@ public class Member extends AuditingFields {
         this.password = password;
     }
 
-    public void updateRefreshToken(final String updateRefreshToken) {
+    public Member updateRefreshToken(final String updateRefreshToken) {
         refreshToken = updateRefreshToken;
+        return this;
     }
 
-    public void changePhoneNumber(final String phoneNumber){
+    private void changePhoneNumber(final String phoneNumber){
         this.phoneNumber = phoneNumber;
     }
 
 
-    public void changeProfileImage(String profileImage) {
+    private void changeProfileImage(final String profileImage) {
         this.profileImage = profileImage;
     }
 
     @Builder
-    public Member(final Long userId, final String nickname, final String password, final String email, final UserRole userRole, final String profileImage) {
-        this.userId = userId;
+    public Member(final Long memberId, final String nickname, final String password, final String email, final MemberRole memberRole, final String profileImage) {
+        this.memberId = memberId;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.profileImage = profileImage;
-        this.userRole = userRole;
+        this.memberRole = memberRole;
     }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof final Member member)) return false;
-        return Objects.equals(userId, member.userId);
+        return Objects.equals(memberId, member.memberId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(memberId);
     }
 
 
-    public void updateUserSetting(String nickname, String encodePassword, String phoneNumber, String profileImage) {
+    public void updateMemberSetting(final String nickname, final String encodePassword, final String phoneNumber, final String profileImage) {
         changeNickname(nickname);
-        setPassword(encodePassword);
+        password = encodePassword;
         changePhoneNumber(phoneNumber);
         changeProfileImage(profileImage);
     }

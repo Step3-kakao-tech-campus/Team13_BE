@@ -1,7 +1,7 @@
-package com.theocean.fundering.domain.heart.controller;
+package com.theocean.fundering.domain.post.controller;
 
 
-import com.theocean.fundering.domain.heart.service.HeartService;
+import com.theocean.fundering.domain.post.service.HeartService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "HEART", description = "찜하기 관련 API")
 @RestController
@@ -24,8 +28,8 @@ public class HeartController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/posts/{postId}/heart")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> addHeart(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                 @PathVariable Long postId){
+    public ApiResult<?> addHeart(@AuthenticationPrincipal final CustomUserDetails userDetails,
+                                 @PathVariable final Long postId) {
         heartService.addHeart(userDetails.getId(), postId);
         return ApiResult.success(null);
 
@@ -33,12 +37,11 @@ public class HeartController {
 
     @Operation(summary = "찜하기 취소", description = "펀딩 id를 기반으로 펀딩 찜을 취소한다.")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/posts/{postId}/unHeart")
+    @PostMapping("/posts/{postId}/unHeart")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> unHeart(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                @PathVariable Long postId){
-
-        heartService.unHeart(userDetails.getId(), postId);
+    public ApiResult<?> subtractHeart(@AuthenticationPrincipal final CustomUserDetails userDetails,
+                                      @PathVariable final Long postId) {
+        heartService.subtractHeart(userDetails.getId(), postId);
         return ApiResult.success(null);
     }
 }
