@@ -64,7 +64,7 @@ public class CelebService {
         final Celebrity celebrity = celebRepository.findById(celebId)
                 .map(Celebrity::rejectCelebrity)
                 .orElseThrow(() -> new Exception400(ErrorCode.ER02));
-            celebRepository.save(celebrity);
+        celebRepository.save(celebrity);
     }
 
     public PageResponse<CelebResponse.FundingDTO> findAllPosting(final Long celebId, final Pageable pageable) {
